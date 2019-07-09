@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>星·光</title>
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/images/web-icon.png}" media="screen" />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/pagination.css}">
+    <link rel="stylesheet" th:href="@{/css/pageindex.css}">
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/jquery.pagination.js}"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            load(0);
+        });
+        function load(pageNum) {
+            $.ajax({
+                url:"/article/selectAll",
+                type:"POST",
+                data:{"pageNum":pageNum},
+                success:function (data) {
+                    //清空数据
+                    $(".article").html('');
+                    $.each(data.list,function(i,dom){
+                        $(".article").append(
+                            "<time>"+dom.time+"</time>" +
+                            "<h2 class='title'><a href='article?id=${article.id}'>"+dom.title+"</a></h2>" +
+                            "<span><i>"+dom.keywords+"</i></span>" +
+                            "<section class='article-content markdown-body'>" +
+                            "<blockquote>" +
+                            "<p>"+dom.desci+"</p>" +
+                            "</blockquote>" +
+                            "            ......" +
+                            "        </section>" +
+                            "        <footer>" +
+                            "            <a href='article?id=${article.id}'>阅读全文</a>" +
+                            "        </footer>");
+                        //渲染分页  总记录数  当前页码  每页数据量
+                        $('#Pagination').pagination(data.total, {
+                            current_page : pageNum,
+                            items_per_page : data.pageSize,
+                            callback:load,
+                            load_first_page : true,
+                            num_display_entries: 2,
+                            num_edge_entries: 2,
+                            prev_text : '上一页',
+                            next_text : '下一页'
+                        });
+                    });
+                }
+            })
+        }
+    </script>
+</head>
+<body background="/images/bg.png" >
+
+<div>
+    <header id="header">
+        <nav>
+            <ul>
+                <li>
+                    <a href="/">首页</a>
+                    <a href="/article/getAbout">关于</a>
+                </li>
+            </ul>
+            <div class="my-info" onmouseover="hiddeewm()" onmouseout="hiddeewm()">
+                <figure></figure>
+                <span>星·光</span>
+                <div id="hiddenewm" hidden="true" >
+                    <img src="/images/me.jpg" width="200px" height="200px" >
+                    <p></p>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="bg" >
+        <p>
+            和所有以梦为马的诗人一样
+            <br>
+            <i>岁月易逝 一滴不剩</i>
+        </p>
+    </div>
+</div>
+<div id="container">
+
+    <article class="article">
+
+    </article>
+    <div style="text-align: center">
+        <div id="Pagination" class="scott"></div>
+    </div>
+</div>
+    <footer id="footer">
+        <section id="copyright">
+            <p style="font-size: 20px">
+                © 2018 <a href="/">星·光</a>
+            </p>
+        </section>
+    </footer>
+</body>
+</html>
