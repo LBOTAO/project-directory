@@ -14,6 +14,8 @@ public class MyConfig {
             public void addViewControllers(ViewControllerRegistry registry) {
                 registry.addViewController("/").setViewName("index");
                 registry.addViewController("/index.html").setViewName("index");
+                registry.addViewController("/catalog").setViewName("/admin/catalog_list");
+                registry.addViewController("/detail.html").setViewName("/detail.html");
             }
         };
         return webMvcConfigurer;

@@ -16,6 +16,11 @@
   <sql id="Blob_Column_List" >
     desc
   </sql>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from catalog
+  </select>
+
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -99,9 +104,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.happy.entity.Catalog" >
     update catalog
-    set name = #{name,jdbcType=VARCHAR},
-      keywords = #{keywords,jdbcType=VARCHAR},
-      type = #{type,jdbcType=BIT}
+    set name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

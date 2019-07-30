@@ -7,14 +7,18 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/pagination.css}">
     <link rel="stylesheet" th:href="@{/css/pageindex.css}">
+
+
+
     <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/jquery.pagination.js}"></script>
 
+
     <script type="text/javascript">
-        $(function(){
-            load(0);
-        });
+        // $(function(){
+        //     //load(0);
+        // });
         function load(pageNum) {
             $.ajax({
                 url:"/article/selectAll",
@@ -26,7 +30,7 @@
                     $.each(data.list,function(i,dom){
                         $(".article").append(
                             "<time>"+dom.time+"</time>" +
-                            "<h2 class='title'><a href='article?id=${article.id}'>"+dom.title+"</a></h2>" +
+                            "<h2 class='title'><a href='article/selectArticByPrimaryKey?id="+dom.id+"'>"+dom.title+"</a></h2>" +
                             "<span><i>"+dom.keywords+"</i></span>" +
                             "<section class='article-content markdown-body'>" +
                             "<blockquote>" +
@@ -35,7 +39,7 @@
                             "            ......" +
                             "        </section>" +
                             "        <footer>" +
-                            "            <a href='article?id=${article.id}'>阅读全文</a>" +
+                            "            <a href='article/selectArticByPrimaryKey?id="+dom.id+"'>阅读全文</a>" +
                             "        </footer>");
                         //渲染分页  总记录数  当前页码  每页数据量
                         $('#Pagination').pagination(data.total, {
@@ -85,12 +89,26 @@
 </div>
 <div id="container">
 
-    <article class="article">
-
+    <article class="article" v-for="item in articleList">
+        <time>{{item.time}}</time>
+        <h2 class="title"><a href="#" @click="articledetail(item.id)">{{item.title}}</a></h2>
+        <span><i>{{item.keywords}}</i></span>
+        <section class="article-content markdown-body">
+            <blockquote>
+                <p>{{item.desci}}</p>
+            </blockquote>
+            ......
+        </section>
+        <footer>
+            <a href="#" @click="articledetail(item.id)">阅读全文</a>
+        </footer>
     </article>
-    <div style="text-align: center">
-        <div id="Pagination" class="scott"></div>
-    </div>
+
+    <!--分页条的占位-->
+    <zpagenav v-bind:page="page" v-bind:page-size="pageSize" v-bind:total="total" v-bind:max-page="maxPage" v-on:pagehandler="pageHandler"></zpagenav>
+    <!--<div style="text-align: center">-->
+        <!--<div id="Pagination" class="scott"></div>-->
+    <!--</div>-->
 </div>
     <footer id="footer">
         <section id="copyright">
@@ -100,4 +118,45 @@
         </section>
     </footer>
 </body>
+<link rel="stylesheet" th:href="@{/css/zpageNav.css}"/>
+<script th:src="@{/js/vue.js}"></script>
+<script th:src="@{/js/zpageNav.js}"></script>
+<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+<script>
+    var vm=new Vue({
+        el:"#container",
+        data:{
+            articleList:[],
+            page:1,   //显示的是哪一页
+            pageSize:5,  //页面显示的数据条数
+            total:100,  //总记录数
+            maxPage:9,  //总页数
+        },
+        methods:{
+            //跳转到page页
+            pageHandler:function (page) {
+                this.page=page; //修改显示的页数page
+                var params={"pageNum":page,"pageSize":this.pageSize};
+                this.$http.post("/article/selectAll",params,{emulateJSON:true}).then(
+                    function (res) {
+                        this.articleList=res.data.list;
+                        this.total=res.data.total;
+                        this.maxPage=res.data.pages;
+                    },
+                    function (res) {
+                        console.log(res);
+                    }
+                )
+            },
+            articledetail:function (id) {
+                //localStorage.setItem("article_id",id);
+                location.href="/article/selectArticByPrimaryKey?id="+id;
+            }
+        },
+        created:function () {
+            this.pageHandler(1);
+        }
+    });
+</script>
+
 </html>

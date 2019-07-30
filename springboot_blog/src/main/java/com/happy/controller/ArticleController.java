@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/article")
@@ -22,8 +23,21 @@ public class ArticleController {
 
     @RequestMapping("/selectAll")
     @ResponseBody
-    private Object selectArticleAll(@RequestParam(required = true,defaultValue = "0")int pageNum,@RequestParam(required = true,defaultValue = "3")int pageSize){
-        PageInfo<Article> articlePageInfo = articleService.selectAll((pageNum + 1), pageSize);
+    public Object selectArticleAll(@RequestParam(required = true,defaultValue = "0")int pageNum,@RequestParam(required = true,defaultValue = "3")int pageSize){
+        PageInfo<Article> articlePageInfo = articleService.selectAll(pageNum, pageSize);
         return articlePageInfo;
+    }
+
+    @RequestMapping("/selectArticByPrimaryKey")
+    @ResponseBody
+    public ModelAndView selectArticByPrimaryKey(Integer id){
+        Article article = articleService.selectByPrimaryKey(id);
+        Article lastArticle = articleService.selectLastArticle(id);
+        Article nextArticle = articleService.selectNextArticle(id);
+        ModelAndView modelAndView=new ModelAndView("/detail");
+        modelAndView.addObject("article",article);
+        modelAndView.addObject("lastArticle",lastArticle);
+        modelAndView.addObject("nextArticle",nextArticle);
+        return modelAndView;
     }
 }

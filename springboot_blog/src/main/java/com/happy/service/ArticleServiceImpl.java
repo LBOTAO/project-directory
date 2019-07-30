@@ -22,4 +22,19 @@ public class ArticleServiceImpl implements ArticleService{
         articleMapper.selectAll();
         return page.toPageInfo();
     }
+
+    @Override
+    public Article selectByPrimaryKey(Integer id) {
+        return articleMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public Article selectLastArticle(Integer id) {
+        return articleMapper.selectLastArticle(id);
+    }
+
+    @Override
+    public Article selectNextArticle(Integer id) {
+        return articleMapper.selectNextArticle(id);
+    }
 }

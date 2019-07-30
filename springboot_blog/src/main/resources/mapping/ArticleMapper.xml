@@ -23,6 +23,21 @@
   <select id="selectAll" resultMap="ResultMapWithBLOBs">
     select <include refid="Base_Column_List"/> from article
   </select>
+
+  <select id="selectLastArticle" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    id,title
+    from article
+    where id &lt; #{id,jdbcType=INTEGER} ORDER BY id desc limit 1;
+  </select>
+
+  <select id="selectNextArticle" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    id,title
+    from article
+    where id &gt; #{id,jdbcType=INTEGER} ORDER BY id ASC limit 1;
+  </select>
+
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

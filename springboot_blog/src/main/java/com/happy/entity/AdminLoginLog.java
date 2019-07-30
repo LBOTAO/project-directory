@@ -45,7 +45,7 @@ public class AdminLoginLog {
     }
 
     public String getLocalTime() {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy/M/dd HH:mm");//设置日期格式
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm");//设置日期格式
         String dates = df.format(date);
         return dates;
 

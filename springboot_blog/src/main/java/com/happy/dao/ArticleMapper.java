@@ -20,4 +20,8 @@ public interface ArticleMapper {
     int updateByPrimaryKeyWithBLOBs(Article record);
 
     int updateByPrimaryKey(Article record);
+
+    Article selectLastArticle(Integer id);
+
+    Article selectNextArticle(Integer id);
 }
